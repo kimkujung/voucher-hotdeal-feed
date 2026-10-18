@@ -1,16 +1,18 @@
 # 상품권핫딜 공개 피드 수집기
 
-공식 루리웹 핫딜 RSS에서 상품권 관련 제목·원문 링크·게시 시각만 추출합니다.
+루리웹·뽐뿌 공식 RSS와 아카라이브 상품권/쿠폰 목록에서 제목·원문 링크·게시 시각·게시가격을 추출합니다.
 30분 간격의 GitHub Actions 표준 Linux 실행기용이며 AI API와 Supabase 비밀키를 사용하지 않습니다.
-본문·이미지·작성자·댓글을 게시하지 않습니다. 가격은 커뮤니티 게시가격이며 판매처 검증을 뜻하지 않습니다.
+아카라이브는 상품권/쿠폰 목록 1페이지만 확인하며 종료 표시와 유료 배송 항목은 제외합니다. 본문·이미지·작성자·댓글을 게시하지 않습니다. 가격은 커뮤니티 게시가격이며 판매처 검증을 뜻하지 않습니다.
 
-저장소에는 이 README, refresh_feed.py, .github/workflows/collect.yml과 자동 생성된 data/ruliweb.xml만 올립니다.
+저장소에는 이 README, refresh_feed.py, community_feeds.py, .github/workflows/collect.yml과 자동 생성된 data/*.xml만 올립니다.
 앱 전체 소스·로컬 설정·계정 정보·서버 키를 포함하지 않습니다.
 
 공식 RSS 안내: https://bbs.ruliweb.com/etcs/board/10/read/31
 원본 피드: https://bbs.ruliweb.com/market/board/1020/rss
+뽐뿌 공식 RSS: https://www.ppomppu.co.kr/rss.php?id=ppomppu
+아카라이브 상품권/쿠폰: https://arca.live/b/hotdeal?category=gift
 
-한 번에 GET 한 번만 요청합니다. 로그인·쿠키·리다이렉트·차단 우회·자동 재시도는 하지 않습니다.
-접근 거부나 오류 시 작업이 실패하고 기존 파일을 유지합니다.
+출처마다 GET 한 번만 요청합니다. 로그인·쿠키·리다이렉트·차단 우회·자동 재시도는 하지 않습니다.
+출처별 접근 거부나 오류 시 해당 파일과 갱신시각을 유지하고 경고를 남깁니다. 다른 출처는 독립적으로 갱신합니다. 전부 실패하면 작업을 실패 처리합니다.
 소비자는 lastBuildDate가 2시간을 넘은 피드를 새 수집 성공으로 처리하지 않아야 합니다.
 GitHub 예약 작업은 지연되거나 비활동으로 중단될 수 있어 실시간 전달을 보장하지 않습니다.
