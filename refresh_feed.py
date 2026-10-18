@@ -4,6 +4,7 @@ from email.utils import parsedate_to_datetime, format_datetime
 from pathlib import Path
 import re
 import urllib.request
+import urllib.error
 import xml.etree.ElementTree as ET
 from community_feeds import ARCA, PPOMPPU, community_feed
 
@@ -71,19 +72,27 @@ def fetch_feed(url, content_types, limit):
 def main():
     successes=0
     for name,url in [('ruliweb',SOURCE),('arcalive',ARCA),('ppomppu',PPOMPPU)]:
+        target=Path('data')/(name+'.xml')
+        stopped=Path('data')/(name+'.disabled')
+        if stopped.exists():
+            print('::warning::'+name+' is paused after an HTTP access restriction; review before resuming.')
+            continue
         try:
             types=['text/html'] if name=='arcalive' else ['text/xml','application/xml','application/rss+xml']
             raw=fetch_feed(url,types,1_500_000 if name=='arcalive' else 512_000)
             now=datetime.now(timezone.utc)
             data=minimal_feed(raw,now) if name=='ruliweb' else community_feed(name,raw,now)
-            target=Path('data')/(name+'.xml')
             target.parent.mkdir(parents=True,exist_ok=True)
             target.write_bytes(data)
             successes+=1
             print('Updated '+name+' minimal public feed.')
         except Exception as error:
             # Keep the prior file and timestamp for this source. Never print response bodies.
-            print('::warning::'+name+' refresh failed: '+type(error).__name__)
+            reason='http_'+str(error.code) if isinstance(error,urllib.error.HTTPError) else type(error).__name__
+            if isinstance(error,urllib.error.HTTPError) and error.code in [401,403,429]:
+                stopped.parent.mkdir(parents=True,exist_ok=True)
+                stopped.write_text(reason+'\n',encoding='utf-8')
+            print('::warning::'+name+' refresh failed: '+reason)
     if not successes: raise RuntimeError('all_source_requests_failed')
 
 
