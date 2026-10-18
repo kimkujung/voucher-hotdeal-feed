@@ -17,9 +17,10 @@ jobs:
       - name: Refresh minimal public RSS
         run: python3 refresh_feed.py
       - name: Publish changed feed
+        if: always()
         shell: bash
         run: |
-          git add -- data/*.xml
+          git add -- data/
           if git diff --cached --quiet; then exit 0; fi
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
