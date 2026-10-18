@@ -7,6 +7,7 @@ import urllib.request
 import urllib.error
 import xml.etree.ElementTree as ET
 from community_feeds import ARCA, PPOMPPU, community_feed
+from feed_history import retain_recent
 
 SOURCE = 'https://bbs.ruliweb.com/market/board/1020/rss'
 CHANNEL = 'https://bbs.ruliweb.com/market/board/1020'
@@ -82,6 +83,7 @@ def main():
             raw=fetch_feed(url,types,1_500_000 if name=='arcalive' else 512_000)
             now=datetime.now(timezone.utc)
             data=minimal_feed(raw,now) if name=='ruliweb' else community_feed(name,raw,now)
+            data=retain_recent(name,data,target.read_bytes() if target.exists() else None,now)
             target.parent.mkdir(parents=True,exist_ok=True)
             target.write_bytes(data)
             successes+=1
