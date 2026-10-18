@@ -4,7 +4,7 @@
 30분 간격의 GitHub Actions 표준 Linux 실행기용이며 AI API와 Supabase 비밀키를 사용하지 않습니다.
 아카라이브는 상품권/쿠폰 목록 1페이지만 확인하며 종료 표시와 유료 배송 항목은 제외합니다. 본문·이미지·작성자·댓글을 게시하지 않습니다. 가격은 커뮤니티 게시가격이며 판매처 검증을 뜻하지 않습니다.
 
-저장소에는 이 README, refresh_feed.py, community_feeds.py, .github/workflows/collect.yml과 자동 생성된 data/*.xml만 올립니다.
+저장소에는 이 README, refresh_feed.py, community_feeds.py, .github/workflows/collect.yml과 자동 생성된 data/*.xml 및 접근 제한을 기록하는 data/*.disabled만 올립니다.
 앱 전체 소스·로컬 설정·계정 정보·서버 키를 포함하지 않습니다.
 
 공식 RSS 안내: https://bbs.ruliweb.com/etcs/board/10/read/31
@@ -14,5 +14,6 @@
 
 출처마다 GET 한 번만 요청합니다. 로그인·쿠키·리다이렉트·차단 우회·자동 재시도는 하지 않습니다.
 출처별 접근 거부나 오류 시 해당 파일과 갱신시각을 유지하고 경고를 남깁니다. 다른 출처는 독립적으로 갱신합니다. 전부 실패하면 작업을 실패 처리합니다.
+HTTP 401·403·429를 받으면 data/<출처>.disabled 파일을 남기고 이후 요청을 중단합니다. 이 중지 표시는 실패한 작업에서도 저장합니다. 출처 정책과 접근 상태를 재검토하기 전에는 중지 파일을 지우지 않습니다.
 소비자는 lastBuildDate가 2시간을 넘은 피드를 새 수집 성공으로 처리하지 않아야 합니다.
 GitHub 예약 작업은 지연되거나 비활동으로 중단될 수 있어 실시간 전달을 보장하지 않습니다.
