@@ -2,7 +2,7 @@ name: Collect public voucher RSS
 on:
   workflow_dispatch:
   schedule:
-    - cron: '17,47 * * * *'
+    - cron: '27,57 * * * *'
 permissions:
   contents: write
 concurrency:
@@ -26,3 +26,4 @@ jobs:
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git commit -m 'Refresh public voucher feed'
           git push
+
