@@ -71,7 +71,7 @@ def fetch_feed(url, content_types, limit):
 
 
 def main():
-    successes=0
+    refreshed=set()
     for name,url in [('ruliweb',SOURCE),('arcalive',ARCA),('ppomppu',PPOMPPU)]:
         target=Path('data')/(name+'.xml')
         stopped=Path('data')/(name+'.disabled')
@@ -86,7 +86,7 @@ def main():
             data=retain_recent(name,data,target.read_bytes() if target.exists() else None,now)
             target.parent.mkdir(parents=True,exist_ok=True)
             target.write_bytes(data)
-            successes+=1
+            refreshed.add(name)
             print('Updated '+name+' minimal public feed.')
         except Exception as error:
             # Keep the prior file and timestamp for this source. Never print response bodies.
@@ -95,7 +95,11 @@ def main():
                 stopped.parent.mkdir(parents=True,exist_ok=True)
                 stopped.write_text(reason+'\n',encoding='utf-8')
             print('::warning::'+name+' refresh failed: '+reason)
-    if not successes: raise RuntimeError('all_source_requests_failed')
+    if not refreshed: raise RuntimeError('all_source_requests_failed')
+    # Production reads Ruliweb through this mirror; Ppomppu uses direct RSS.
+    # An optional source must not hide a failed production dependency.
+    if 'ruliweb' not in refreshed:
+        raise RuntimeError('required_ruliweb_feed_not_refreshed')
 
 
 if __name__ == '__main__':
