@@ -7,7 +7,7 @@ import urllib.request
 import urllib.error
 import xml.etree.ElementTree as ET
 from community_feeds import ARCA, PPOMPPU, community_feed
-from feed_history import retain_recent
+from feed_history import retain_recent, document
 
 SOURCE = 'https://bbs.ruliweb.com/market/board/1020/rss'
 CHANNEL = 'https://bbs.ruliweb.com/market/board/1020'
@@ -70,6 +70,18 @@ def fetch_feed(url, content_types, limit):
         return raw
 
 
+def recent_cached_feed(source, path, now):
+    if not path.exists(): return False
+    try:
+        channel=document(path.read_bytes(),source)
+        dates=channel.findall('lastBuildDate')
+        if len(dates)!=1: return False
+        updated=parsedate_to_datetime(dates[0].text or '')
+        return updated.tzinfo is not None and 0 <= (now-updated).total_seconds() < 1500
+    except (ValueError,TypeError,OverflowError,ET.ParseError):
+        return False
+
+
 def main():
     refreshed=set()
     for name,url in [('ruliweb',SOURCE),('arcalive',ARCA),('ppomppu',PPOMPPU)]:
@@ -77,6 +89,10 @@ def main():
         stopped=Path('data')/(name+'.disabled')
         if stopped.exists():
             print('::warning::'+name+' is paused after an HTTP access restriction; review before resuming.')
+            continue
+        if recent_cached_feed(name,target,datetime.now(timezone.utc)):
+            refreshed.add(name)
+            print('Using recent '+name+' minimal feed without a new request.')
             continue
         try:
             types=['text/html'] if name=='arcalive' else ['text/xml','application/xml','application/rss+xml']
