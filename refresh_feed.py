@@ -5,6 +5,7 @@ from pathlib import Path
 import re
 import urllib.request
 import xml.etree.ElementTree as ET
+from community_feeds import ARCA, PPOMPPU, community_feed
 
 SOURCE = 'https://bbs.ruliweb.com/market/board/1020/rss'
 CHANNEL = 'https://bbs.ruliweb.com/market/board/1020'
@@ -55,19 +56,35 @@ class NoRedirect(urllib.request.HTTPRedirectHandler):
         return None
 
 
-def main():
-    request = urllib.request.Request(SOURCE, headers={
+def fetch_feed(url, content_types, limit):
+    request = urllib.request.Request(url, headers={
         'User-Agent': 'VoucherHotdeal/0.1 (+public deal information; low-frequency)'})
     # One ordinary GET. A failure keeps the previous feed; no fallback IP/cookie/UA.
     with urllib.request.build_opener(NoRedirect).open(request, timeout=15) as response:
-        if response.headers.get_content_type() not in ['text/xml','application/xml','application/rss+xml']:
+        if response.headers.get_content_type() not in content_types:
             raise ValueError('unexpected_content_type')
-        raw = response.read(512_001)
-    data = minimal_feed(raw, datetime.now(timezone.utc))
-    target = Path('data/ruliweb.xml')
-    target.parent.mkdir(parents=True, exist_ok=True)
-    target.write_bytes(data)
-    print('Updated minimal public voucher feed; no author, body, image or comment fields.')
+        raw = response.read(limit+1)
+        if len(raw)>limit: raise ValueError('response_too_large')
+        return raw
+
+
+def main():
+    successes=0
+    for name,url in [('ruliweb',SOURCE),('arcalive',ARCA),('ppomppu',PPOMPPU)]:
+        try:
+            types=['text/html'] if name=='arcalive' else ['text/xml','application/xml','application/rss+xml']
+            raw=fetch_feed(url,types,1_500_000 if name=='arcalive' else 512_000)
+            now=datetime.now(timezone.utc)
+            data=minimal_feed(raw,now) if name=='ruliweb' else community_feed(name,raw,now)
+            target=Path('data')/(name+'.xml')
+            target.parent.mkdir(parents=True,exist_ok=True)
+            target.write_bytes(data)
+            successes+=1
+            print('Updated '+name+' minimal public feed.')
+        except Exception as error:
+            # Keep the prior file and timestamp for this source. Never print response bodies.
+            print('::warning::'+name+' refresh failed: '+type(error).__name__)
+    if not successes: raise RuntimeError('all_source_requests_failed')
 
 
 if __name__ == '__main__':
