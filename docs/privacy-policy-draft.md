@@ -66,6 +66,16 @@ Supabase 공개 DPA의 계약 상대는 Supabase Pte. Ltd.이며, 고객 데이�
 
 추가 확인: Firebase의 상품별 표준 약관 안내는 현재 사용하는 Hosting·FCM을 Google APIs Terms 및 Firebase 처리 약관으로 연결한다. Google APIs Terms의 기본 상대는 Google LLC이며 별도 추가 약관이 있으면 달라질 수 있다. Firebase Authentication·Cloud Functions의 GCP 계약 분류를 이 두 상품에 그대로 적용하지 않는다. 이 표준 계약 경로를 최종 확인 근거에 포함한다.
 
+### 2026-10-21 공식 자료 재확인
+
+Supabase 공개 DPA(2026-08-01판)는 계약 상대를 Supabase Pte. Ltd.로 기재한다. 2026-10-12 재처리자 목록의 Country는 업체에 붙은 국가이며, 이 프로젝트의 모든 사용자 데이터가 그 국가에 저장된다는 근거로 사용하지 않는다. 목록에 등장하는 모든 공급자를 상품권핫딜이 직접 사용하거나 모든 사용자 데이터를 전달하는 대상으로 고지하지 않는다. 예를 들어 목록에 AI 업체가 있어도 상품권핫딜이 AI API를 호출한다는 뜻은 아니다.
+
+Firebase 서비스별 약관표(2026-09-24 갱신)는 현재 사용하는 Hosting과 Cloud Messaging을 Google APIs Terms 및 Firebase Data Processing and Security Terms로 연결한다. 별도로 체결한 Cloud Master Agreement가 있다면 그 계약이 우선할 수 있으므로 실제 계정 적용 여부는 구분한다. Cloud Master Agreement 전용 서비스 약관 페이지만 보고 이 프로젝트의 기본 적용 약관을 바꾸지 않는다.
+
+Firebase 공식 개인정보 안내는 Hosting·FCM을 글로벌 인프라 서비스로 설명한다. 주 Supabase DB가 시드니라는 사실로 Google 처리도 호주로 한정하지 않는다. 실제 처리 국가의 최종 국내 고지 방식은 아래 미확정 사항으로 남긴다.
+
+확인 자료: [Supabase DPA](https://supabase.com/legal/customer-resources/data-processing-addendum), [2026-10-12 재처리자 목록](https://supabase.com/legal/subprocessor-list/October-12-2026.pdf), [Firebase 서비스별 표준 약관](https://firebase.google.com/terms), [Firebase 개인정보 안내](https://firebase.google.com/support/privacy).
+
 **미확정:** 국내 고지에 사용할 위탁/국외 이전의 법적 근거·분류, Google 계정에 적용되는 법인, 공급자의 최종 처리 국가·수신자 연락처 및 사용자 거부/처리 정지 안내의 최종 문구. 공개 약관을 열람한 것만으로 새 계약에 동의하거나 해당 항목의 법적 검토를 완료한 것은 아니다.
 
 ## 사용자 선택과 권리 행사
@@ -84,7 +94,9 @@ Supabase 공개 DPA의 계약 상대는 Supabase Pte. Ltd.이며, 고객 데이�
 
 일반 사용자의 소유 데이터 접근은 계정별 정책으로 제한하고, 관리자 정보는 현재 세션과 관리자 권한을 확인한다. 정리 작업은 일반 클라이언트 API가 아닌 DB 소유자와 내부 예약만 실행할 수 있다. 서버 비밀 키를 앱 배포물에 넣지 않는다. 공급자 API 접속에는 HTTPS를 사용한다.
 
-**미확정:** 운영자의 문의·권리 행사 처리 기록 보관, 적용 법령에 따른 접근 기록 관리 범위, 최종 변경 고지 절차와 시행일. 실측하지 않은 보안 인증이나 즉시 영구 삭제를 보장하는 문구는 넣지 않는다.
+**운영 기준 확인:** 문의·권리 행사 요청 기록은 앞서 정한 답변 완료 후30일 이내 운영자 삭제 기준을 따른다. 분쟁·법적 보관이 필요한 예외는 근거·범위·기간을 개별 기록한다.
+
+**미확정:** 적용 법령에 따른 접근 기록 관리 범위, 최종 변경 고지 절차와 시행일. 실측하지 않은 보안 인증이나 즉시 영구 삭제를 보장하는 문구는 넣지 않는다.
 
 ## 공개 전 점검
 
