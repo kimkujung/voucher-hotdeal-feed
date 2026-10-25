@@ -36,7 +36,7 @@ def minimal_feed(raw: bytes, now: datetime) -> bytes:
         date = (item.findtext('pubDate') or '').strip()
         if not POST.fullmatch(link) or link in seen or not 1 <= len(title) <= 500:
             continue
-        if not re.search(r'상품권|금액권|기프트|기프티콘|교환권|모바일\s*쿠폰|원\s*권', title):
+        if not re.search(r'상품권|금액권|기프트|기프티콘|교환권|모바일\s*쿠폰|\d[\d,.]*\s*(?:만|천)?\s*원\s*권', title):
             continue
         if re.search(r'종료|품절|증정|추첨|일일적립|클릭\s*적립', title):
             continue
