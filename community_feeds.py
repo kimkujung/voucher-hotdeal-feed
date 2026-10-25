@@ -117,7 +117,7 @@ def ppomppu_rows(raw, now):
         if any(len(item.findall(t))!=1 for t in ['title','link','pubDate']):
             continue
         title=(item.findtext('title') or '').strip()
-        if not re.search(r'상품권|금액권|기프트|기프티콘|교환권|모바일\s*쿠폰|아메리카노',title):
+        if not re.search(r'상품권|금액권|기프트|기프티콘|교환권|모바일\s*쿠폰|아메리카노|원\s*권',title):
             continue
         link=post_url('ppomppu',item.findtext('link') or '')
         date=recent(item.findtext('pubDate') or '',now)
